@@ -47,6 +47,9 @@ export async function getMyWorkflows(slug) {
 /**
  * Get pending approvals for the current user
  */
+/**
+ * Get pending approvals for the current user
+ */
 export async function getPendingApprovals(slug) {
     return apiClient(`/workflows/${slug}/workflows/pending/`, {
         method: 'GET',
