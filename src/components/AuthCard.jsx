@@ -87,7 +87,8 @@ export default function AuthCard() {
             } else {
                 // Sign in
                 const data = await authService.signin(orgSlug, email, password);
-                login(orgSlug, email);
+                const role = data.role || (data.data && data.data.role);
+                login(orgSlug, email, role);
             }
         } catch (err) {
             // Try to extract field-level errors from the API response
@@ -169,8 +170,8 @@ export default function AuthCard() {
                                 type="button"
                                 onClick={() => switchMode(false)}
                                 className={`flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 cursor-pointer ${!isSignUp
-                                        ? 'bg-cardbg text-textprimary shadow-sm'
-                                        : 'text-textsecondary hover:text-textprimary'
+                                    ? 'bg-cardbg text-textprimary shadow-sm'
+                                    : 'text-textsecondary hover:text-textprimary'
                                     }`}
                             >
                                 Sign In
@@ -179,8 +180,8 @@ export default function AuthCard() {
                                 type="button"
                                 onClick={() => switchMode(true)}
                                 className={`flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 cursor-pointer ${isSignUp
-                                        ? 'bg-cardbg text-textprimary shadow-sm'
-                                        : 'text-textsecondary hover:text-textprimary'
+                                    ? 'bg-cardbg text-textprimary shadow-sm'
+                                    : 'text-textsecondary hover:text-textprimary'
                                     }`}
                             >
                                 Sign Up

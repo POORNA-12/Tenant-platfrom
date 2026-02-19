@@ -16,11 +16,11 @@ import {
     History
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { getPendingApprovals, approveWorkflowRequest, rejectWorkflowRequest } from '../services/workflowService';
+import { getPendingApprovals, getMyWorkflows, approveWorkflowRequest, rejectWorkflowRequest } from '../services/workflowService';
 import WorkflowActionModal from '../components/Workflows/WorkflowActionModal';
 
 export default function PendingApprovals() {
-    const { tenantSlug } = useAuth();
+    const { tenantSlug, user } = useAuth();
     const [loading, setLoading] = useState(true);
     const [allRequests, setAllRequests] = useState([]);
     const [filterStatus, setFilterStatus] = useState('pending'); // pending, approved, rejected, all
@@ -33,9 +33,26 @@ export default function PendingApprovals() {
         if (!tenantSlug) return;
         try {
             setLoading(true);
-            const data = await getPendingApprovals(tenantSlug);
-            // API returns { total_requests: number, requests: [] }
-            setAllRequests(data.requests || []);
+            let mergedRequests = [];
+
+            if (user?.role === 'member') {
+                // Members: Fetch "My Requests"
+                const data = await getMyWorkflows(tenantSlug);
+                // Assume getMyWorkflows returns { requests: [...] } or [...]
+                mergedRequests = Array.isArray(data) ? data : (data.requests || []);
+            } else {
+                // Approvers: Fetch "Pending Approvals" (Backend filtered)
+                const data = await getPendingApprovals(tenantSlug);
+
+                // Backend now returns separated arrays: { pending, approved, rejected }
+                const pending = data.pending || [];
+                const approved = data.approved || [];
+                const rejected = data.rejected || [];
+
+                mergedRequests = [...pending, ...approved, ...rejected];
+            }
+
+            setAllRequests(mergedRequests);
         } catch (err) {
             console.error("Failed to fetch approvals:", err);
             setAllRequests([]);
@@ -48,8 +65,17 @@ export default function PendingApprovals() {
         fetchData();
     }, [tenantSlug]);
 
-    // Client-side filtering
+    // Role-based filtering logic
     const filteredRequests = allRequests.filter(req => {
+        // 1. Role-based Scope (Double check for safety)
+        if (user?.role === 'member') {
+            // Member: See ONLY "My Requests" (submitted by me)
+            // Although getMyWorkflows should handle this, we double check.
+            if (req.submitted_by !== user?.email) return false;
+        }
+        // Non-members: We trust the backend (getPendingApprovals) to return relevant items.
+
+        // 2. Status Tab Filtering
         if (filterStatus === 'all') return true;
         return req.status === filterStatus;
     });
@@ -122,8 +148,8 @@ export default function PendingApprovals() {
                             key={tab.id}
                             onClick={() => setFilterStatus(tab.id)}
                             className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-t-lg transition-colors border-b-2 ${isActive
-                                    ? 'border-primary text-primary bg-primary/5'
-                                    : 'border-transparent text-textsecondary hover:text-navy hover:bg-gray-50'
+                                ? 'border-primary text-primary bg-primary/5'
+                                : 'border-transparent text-textsecondary hover:text-navy hover:bg-gray-50'
                                 }`}
                         >
                             <Icon className="w-4 h-4" />

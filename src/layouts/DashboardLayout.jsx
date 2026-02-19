@@ -37,6 +37,13 @@ export default function DashboardLayout() {
         ? user.email.substring(0, 2).toUpperCase()
         : 'U';
 
+    const filteredNav = mainNav.filter(item => {
+        if (item.label === 'Approvals' && user?.role === 'member') {
+            return false;
+        }
+        return true;
+    });
+
     return (
         <div className="min-h-screen bg-bg flex">
             {/* Mobile overlay */}
@@ -72,7 +79,7 @@ export default function DashboardLayout() {
                     <p className="px-3 mb-2 text-[10px] font-bold uppercase tracking-widest text-textmuted">
                         Main Menu
                     </p>
-                    {mainNav.map(({ to, label, icon: Icon }) => (
+                    {filteredNav.map(({ to, label, icon: Icon }) => (
                         <NavLink
                             key={to}
                             to={to}

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAccessToken, getTenantSlug, getUserEmail, clearTokens, setUserEmail } from '../services/api';
+import { getAccessToken, getTenantSlug, getUserEmail, getUserRole, clearTokens, setUserEmail, setUserRole } from '../services/api';
 import * as authService from '../services/authService';
 
 const AuthContext = createContext(null);
@@ -16,18 +16,20 @@ export function AuthProvider({ children }) {
         const token = getAccessToken();
         const slug = getTenantSlug();
         const email = getUserEmail();
+        const role = getUserRole();
 
         if (token && slug) {
-            setUser({ email: email || 'User' });
+            setUser({ email: email || 'User', role });
             setTenantSlug(slug);
         }
         setLoading(false);
     }, []);
 
-    const login = (slug, email) => {
-        setUser({ email });
+    const login = (slug, email, role) => {
+        setUser({ email, role });
         setTenantSlug(slug);
         setUserEmail(email);
+        if (role) setUserRole(role);
         navigate('/dashboard');
     };
 

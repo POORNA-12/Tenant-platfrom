@@ -6,6 +6,7 @@ import {
     setUserEmail,
     setTenantInfo,
     getRefreshToken,
+    setUserRole,
 } from './api';
 
 /**
@@ -58,6 +59,12 @@ export async function signin(slug, email, password) {
     setTenantSlug(slug);
     setUserEmail(email);
     setTenantInfo(res.tenant_user_id, res.tenant_id);
+
+    // Save user role if present
+    const role = res.role || (res.data && res.data.role);
+    if (role) {
+        setUserRole(role);
+    }
 
     return res;
 }

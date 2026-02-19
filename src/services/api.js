@@ -34,6 +34,7 @@ export function clearTokens() {
     deleteCookie('user_email');
     deleteCookie('tenant_user_id');
     deleteCookie('tenant_id');
+    deleteCookie('user_role');
 }
 
 export function getTenantSlug() {
@@ -55,6 +56,14 @@ export function getUserEmail() {
 export function setTenantInfo(userId, tenantId) {
     if (userId) setCookie('tenant_user_id', userId, 7);
     if (tenantId) setCookie('tenant_id', tenantId, 7);
+}
+
+export function setUserRole(role) {
+    setCookie('user_role', role, 7);
+}
+
+export function getUserRole() {
+    return getCookie('user_role');
 }
 
 /* ── JWT expiry check ── */
