@@ -35,7 +35,7 @@ export async function getRequestStatus(slug, requestId) {
 }
 
 /**
- * Get the current user's workflow requests
+ * Get the current user's workflow requests (legacy)
  */
 export async function getMyWorkflows(slug) {
     return apiClient(`/workflows/${slug}/workflows/my/`, {
@@ -44,6 +44,37 @@ export async function getMyWorkflows(slug) {
         slug,
     });
 }
+
+/**
+ * Get the current user's workflow requests (My Requests)
+ */
+export async function getMyRequests(slug, status = null) {
+    let url = `/workflows/${slug}/my-requests/`;
+    if (status) {
+        url += `?status=${status}`;
+    }
+    return apiClient(url, {
+        method: 'GET',
+        auth: true,
+        slug,
+    });
+}
+
+/**
+ * Get workflow approvals for the current user (My Approvals)
+ */
+export async function getMyApprovals(slug, status = null) {
+    let url = `/workflows/${slug}/my-approvals/`;
+    if (status) {
+        url += `?status=${status}`;
+    }
+    return apiClient(url, {
+        method: 'GET',
+        auth: true,
+        slug,
+    });
+}
+
 /**
  * Get pending approvals for the current user
  */

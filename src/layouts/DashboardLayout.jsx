@@ -19,7 +19,8 @@ import { useAuth } from '../context/AuthContext';
 
 const mainNav = [
     { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { to: '/dashboard/approvals', label: 'Approvals', icon: CheckCircle2 },
+    { to: '/my-requests', label: 'My Requests', icon: FileText },
+    { to: '/my-approvals', label: 'My Approvals', icon: CheckCircle2 },
     { to: '/requests', label: 'All Requests', icon: FileText },
     { to: '/drafts', label: 'Drafts', icon: FileEdit },
 ];
@@ -38,11 +39,13 @@ export default function DashboardLayout() {
         : 'U';
 
     const filteredNav = mainNav.filter(item => {
-        if (item.label === 'Approvals' && user?.role === 'member') {
+        if (item.label === 'My Approvals' && user?.role === 'member') {
             return false;
         }
         return true;
     });
+
+    // Hide 'Approvals' as it's been replaced, but keeping it in App.jsx for backward compatibility if needed
 
     return (
         <div className="min-h-screen bg-bg flex">
