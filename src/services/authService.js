@@ -13,7 +13,7 @@ import {
  * Step 1 — Signup: sends OTP to email
  */
 export async function signup(slug, email, password, reenterPassword) {
-    return apiClient(`/tenant_auth/${slug}/signup`, {
+    return apiClient(`/tenant_auth/${slug}/signup/`, {
         method: 'POST',
         body: { email, password, reenter_password: reenterPassword },
     });
@@ -23,7 +23,7 @@ export async function signup(slug, email, password, reenterPassword) {
  * Step 2 — Verify OTP & create user
  */
 export async function verifySignup(slug, email, password, reenterPassword, verificationKey) {
-    return apiClient(`/tenant_auth/${slug}/signup`, {
+    return apiClient(`/tenant_auth/${slug}/signup/`, {
         method: 'POST',
         body: {
             email,
@@ -38,7 +38,7 @@ export async function verifySignup(slug, email, password, reenterPassword, verif
  * Manually resend verification OTP
  */
 export async function sendVerification(email, tenantSlug) {
-    return apiClient(`/tenant_auth/${tenantSlug}/send-verification`, {
+    return apiClient(`/tenant_auth/${tenantSlug}/send-verification/`, {
         method: 'POST',
         body: { email, tenant_slug: tenantSlug },
     });
@@ -48,7 +48,7 @@ export async function sendVerification(email, tenantSlug) {
  * Signin — returns { message, data: { access, refresh }, tenant_user_id, tenant_id }
  */
 export async function signin(slug, email, password) {
-    const res = await apiClient(`/tenant_auth/${slug}/signin`, {
+    const res = await apiClient(`/tenant_auth/${slug}/signin/`, {
         method: 'POST',
         body: { email, password },
     });
@@ -75,7 +75,7 @@ export async function signin(slug, email, password) {
 export async function signout(slug) {
     const refresh = getRefreshToken();
     try {
-        await apiClient(`/tenant_auth/${slug}/signout`, {
+        await apiClient(`/tenant_auth/${slug}/signout/`, {
             method: 'POST',
             body: { refresh },
             auth: true,
@@ -90,7 +90,7 @@ export async function signout(slug) {
  * Change password (authenticated)
  */
 export async function changePassword(slug, oldPassword, newPassword, confirmPassword) {
-    return apiClient(`/tenant_auth/${slug}/change-password`, {
+    return apiClient(`/tenant_auth/${slug}/change-password/`, {
         method: 'POST',
         body: {
             old_password: oldPassword,
@@ -106,7 +106,7 @@ export async function changePassword(slug, oldPassword, newPassword, confirmPass
  * Forgot password — sends reset OTP
  */
 export async function forgotPassword(tenantSlug, email) {
-    return apiClient(`/tenant_auth/${tenantSlug}/forgot-password`, {
+    return apiClient(`/tenant_auth/${tenantSlug}/forgot-password/`, {
         method: 'POST',
         body: { tenant_slug: tenantSlug, email },
     });
@@ -116,7 +116,7 @@ export async function forgotPassword(tenantSlug, email) {
  * Reset password using OTP
  */
 export async function resetPassword(tenantSlug, email, otp, newPassword, confirmPassword) {
-    return apiClient(`/tenant_auth/${tenantSlug}/reset-password`, {
+    return apiClient(`/tenant_auth/${tenantSlug}/reset-password/`, {
         method: 'POST',
         body: {
             tenant_slug: tenantSlug,

@@ -8,11 +8,11 @@ export default defineConfig({
   server: {
     proxy: {
       '/tenant_auth': {
-        target: 'http://127.0.0.1:8000',
+        target: 'https://multi-tenant-backend-q9ja.onrender.com',
         changeOrigin: true,
       },
       '/workflows': {
-        target: 'http://127.0.0.1:8000',
+        target: 'https://multi-tenant-backend-q9ja.onrender.com',
         changeOrigin: true,
       },
     },

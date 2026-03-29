@@ -13,6 +13,15 @@ function deleteCookie(name) {
     document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
 }
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://multi-tenant-backend-q9ja.onrender.com";
+
+function getFullUrl(endpoint) {
+    if (endpoint.startsWith("http")) return endpoint;
+    const base = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
+    const path = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+    return `${base}${path}`;
+}
+
 /* ── Token helpers (exported for use by services) ── */
 export function getAccessToken() {
     return getCookie('access_token');
@@ -97,7 +106,7 @@ async function ensureFreshToken(slug) {
 
     refreshPromise = (async () => {
         try {
-            const res = await fetch(`/tenant_auth/${tenantSlug}/token-refresh`, {
+            const res = await fetch(getFullUrl(`/tenant_auth/${tenantSlug}/token-refresh`), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ refresh }),
@@ -139,7 +148,7 @@ export async function apiClient(endpoint, { method = 'GET', body, auth = false, 
         }
     }
 
-    const url = endpoint;
+    const url = getFullUrl(endpoint);
 
     let res = await fetch(url, {
         method,
